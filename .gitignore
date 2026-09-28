@@ -1,0 +1,29 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# Next.js
+/.next/
+/out/
+/build/
+
+# Local deployment / tooling
+/.vercel
+/.netlify
+
+# Environment secrets (commit only the example template)
+.env
+.env.*
+!.env.example
+
+# Logs and diagnostics
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.log
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/

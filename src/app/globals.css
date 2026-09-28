@@ -1,0 +1,793 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #05030a;
+  --color-ink-soft: #0b0813;
+  --color-neon: #a855f7;
+  --color-cyan: #22d3ee;
+  --color-lime: #a3e635;
+  --font-display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Outfit", "Segoe UI", system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #05030a;
+  color: #f8fafc;
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(168, 85, 247, 0.45);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #08060f;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #a855f7, #22d3ee);
+  border-radius: 99px;
+}
+
+/* ---------- keyframes ---------- */
+@keyframes floaty {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -22px, 0) rotate(2deg); }
+}
+@keyframes floaty-slow {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(14px, -34px, 0) rotate(-3deg); }
+}
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(6%, -8%) scale(1.15); }
+  66% { transform: translate(-7%, 6%) scale(0.9); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes shine {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.85); opacity: 0.9; }
+  70% { transform: scale(1.35); opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes pop-in {
+  0% { transform: scale(0.4) rotate(-12deg); opacity: 0; }
+  70% { transform: scale(1.15) rotate(4deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translate3d(0, 34px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-enter {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes letter-reveal {
+  from { opacity: 0; transform: translate3d(0, 90%, 0); }
+  to { opacity: 1; transform: none; }
+}
+.hero-enter { animation: hero-enter 0.95s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.hero-fade { animation: hero-fade 1.2s ease-out both; }
+.split-text-char { animation: letter-reveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes gradient-drift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes ticker-glow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+/* ---------- utilities ---------- */
+.animate-floaty { animation: floaty 6s ease-in-out infinite; }
+.animate-floaty-slow { animation: floaty-slow 11s ease-in-out infinite; }
+.animate-blob { animation: blob 18s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 26s linear infinite; }
+.animate-pop { animation: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.animate-ticker-glow { animation: ticker-glow 3.2s ease-in-out infinite; }
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 26s linear infinite;
+}
+.marquee-track-slow { animation-duration: 46s; }
+.marquee-mask {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, #f0abfc, #a855f7 30%, #22d3ee 60%, #a3e635 95%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 7s linear infinite;
+}
+
+.glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.card-3d {
+  transform-style: preserve-3d;
+  transition: box-shadow 0.5s ease;
+  will-change: transform;
+}
+.card-3d:hover {
+  box-shadow: 0 40px 80px -30px rgba(168, 85, 247, 0.55);
+}
+.layer-3d { transform: translateZ(60px); }
+.layer-3d-sm { transform: translateZ(28px); }
+.perspective { perspective: 1400px; }
+.perspective-sm { perspective: 800px; }
+
+.reveal {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-pending {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0) scale(0.98);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.grid-lines {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 78%);
+}
+
+.btn-glow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  inset: -150%;
+  z-index: -1;
+  background: conic-gradient(from 0deg, transparent 0 60%, rgba(255, 255, 255, 0.55) 75%, transparent 90%);
+  animation: spin-slow 4.5s linear infinite;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.btn-glow:hover::before {
+  opacity: 1;
+}
+
+.hover-lift {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, border-color 0.45s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px -25px rgba(34, 211, 238, 0.45);
+}
+
+input, textarea, select, button {
+  font-family: inherit;
+}
+
+/* ---------- premium effects ---------- */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.animated-border {
+  position: relative;
+}
+.animated-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--angle),
+    #a855f7,
+    #22d3ee,
+    #a3e635,
+    #fbbf24,
+    #fb7185,
+    #a855f7
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: border-spin 7s linear infinite;
+  pointer-events: none;
+}
+@keyframes border-spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+.shine-host {
+  overflow: hidden;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes ken-burns {
+  0% { transform: scale(1) translate3d(0, 0, 0); }
+  50% { transform: scale(1.12) translate3d(1.5%, -1.5%, 0); }
+  100% { transform: scale(1) translate3d(0, 0, 0); }
+}
+.animate-ken-burns {
+  animation: ken-burns 22s ease-in-out infinite;
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.95; transform: scale(1.08); }
+}
+.animate-glow-breathe {
+  animation: glow-breathe 5.5s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-130%) skewX(-18deg); }
+  100% { transform: translateX(230%) skewX(-18deg); }
+}
+.sweep-on-hover {
+  position: relative;
+  overflow: hidden;
+}
+.sweep-on-hover::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transform: translateX(-130%) skewX(-18deg);
+  pointer-events: none;
+}
+.sweep-on-hover:hover::after {
+  animation: sweep 0.9s ease-out;
+}
+
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-9px) rotate(2deg); }
+}
+.animate-float-badge {
+  animation: float-badge 5s ease-in-out infinite;
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 32px rgba(168, 85, 247, 0.55), 0 0 70px rgba(34, 211, 238, 0.28);
+}
+
+/* safe areas for notched phones / standalone mode */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.bottom-safe {
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 640px) {
+  .glass {
+    backdrop-filter: blur(12px) saturate(130%);
+  }
+}
+
+/* touch devices: no hover tilt tricks, bigger targets */
+@media (hover: none) {
+  .card-3d:hover {
+    box-shadow: none;
+  }
+  .hover-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+/* Keep animations active across devices while ensuring reveal elements stay visible */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Hero "hold" state: hidden until the intro ends. The failsafe keyframe */
+/* reveals it after 6s even if JavaScript never runs.                   */
+/* ------------------------------------------------------------------ */
+.hero-hold,
+.split-text-hold {
+  opacity: 0;
+  animation: hero-failsafe 0.01s linear 6s forwards;
+}
+@keyframes hero-failsafe {
+  to { opacity: 1; }
+}
+
+/* ------------------------------------------------------------------ */
+/* VITALIS intro + loader                                              */
+/* Only `transform` and `opacity` are animated (compositor thread), no  */
+/* blur/drop-shadow filters. Pure CSS, so it stays smooth on phones     */
+/* even while the page is still hydrating.                              */
+/* ------------------------------------------------------------------ */
+.vt-intro {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  background: #04020a;
+  visibility: visible;
+  contain: layout paint;
+}
+html.vt-intro-on .vt-intro {
+  display: grid;
+  place-items: center;
+  animation: vt-out 0.9s cubic-bezier(0.65, 0, 0.35, 1) 2.8s both;
+}
+.vt-intro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(4, 2, 10, 0.72) 100%);
+}
+/* While the intro plays, the page underneath is not painted at all. */
+html.vt-intro-on body {
+  visibility: hidden;
+  animation: vt-body 0.01s linear 2.7s forwards;
+}
+@keyframes vt-body { to { visibility: visible; } }
+@keyframes vt-out { to { opacity: 0; visibility: hidden; } }
+
+.vt-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 9999px;
+  opacity: 0;
+  transform: translate3d(-50%, -50%, 0) scale(0.7);
+  will-change: transform, opacity;
+  animation: vt-glow 3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.vt-glow-a {
+  width: min(130vw, 48rem);
+  height: min(130vw, 48rem);
+  background: radial-gradient(circle, rgba(192, 38, 211, 0.5), rgba(192, 38, 211, 0.18) 40%, transparent 68%);
+}
+.vt-glow-b {
+  width: min(100vw, 34rem);
+  height: min(100vw, 34rem);
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.42), rgba(34, 211, 238, 0.14) 40%, transparent 68%);
+  animation-delay: 0.12s;
+}
+.vt-glow-c {
+  width: min(80vw, 24rem);
+  height: min(80vw, 24rem);
+  background: radial-gradient(circle, rgba(190, 242, 100, 0.3), rgba(190, 242, 100, 0.1) 40%, transparent 68%);
+  animation-delay: 0.3s;
+}
+@keyframes vt-glow {
+  0% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(0.7); }
+  55% { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1.08); }
+  100% { opacity: 0.72; transform: translate3d(-50%, -50%, 0) scale(1); }
+}
+
+.vt-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--s);
+  height: var(--s);
+  margin-left: calc(var(--s) / -2);
+  margin-top: calc(var(--s) / -2);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: vt-ring-in 1.5s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0s) both;
+}
+.vt-ring svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  animation: vt-spin var(--d, 24s) linear infinite;
+}
+.vt-ring-rev svg { animation-direction: reverse; }
+.vt-ring-1 { --s: min(78vw, 19rem); --o: 0.55; --delay: 0s; --d: 22s; }
+.vt-ring-2 { --s: min(112vw, 27rem); --o: 0.36; --delay: 0.15s; --d: 30s; }
+.vt-ring-3 { --s: min(150vw, 36rem); --o: 0.2; --delay: 0.3s; --d: 40s; }
+@keyframes vt-ring-in {
+  from { opacity: 0; transform: scale(0.82); }
+  to { opacity: var(--o, 0.4); transform: scale(1); }
+}
+@keyframes vt-spin { to { transform: rotate(360deg); } }
+@media (max-width: 640px) {
+  .vt-ring-3 { display: none; }
+}
+
+.vt-mark {
+  position: absolute;
+  width: min(40vw, 11rem);
+  height: min(40vw, 11rem);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: vt-mark 2.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.vt-mark path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: vt-draw 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+@keyframes vt-draw { to { stroke-dashoffset: 0; } }
+@keyframes vt-mark {
+  0% { opacity: 0; transform: scale(0.9); }
+  30%, 62% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+.vt-word {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  padding: 0.05em 0.1em 0.05em 0.26em;
+}
+.vt-letter {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.4rem, 12.5vw, 6.5rem);
+  letter-spacing: 0.16em;
+  color: #fff;
+  text-shadow: 0 0 24px rgba(168, 85, 247, 0.45);
+  opacity: 0;
+  transform: translate3d(0, 100%, 0);
+  will-change: transform, opacity;
+  animation: vt-letter 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(1.3s + var(--i) * 75ms);
+}
+@keyframes vt-letter { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
+.vt-sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 34%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  transform: translate3d(-130%, 0, 0) skewX(-18deg);
+  will-change: transform;
+  animation: vt-sweep 1.5s cubic-bezier(0.45, 0, 0.2, 1) 1.85s both;
+}
+@keyframes vt-sweep { to { transform: translate3d(330%, 0, 0) skewX(-18deg); } }
+
+.vt-line {
+  margin-top: 1.6rem;
+  height: 1px;
+  width: min(70vw, 20rem);
+  background: linear-gradient(90deg, transparent, rgba(240, 171, 252, 0.75), transparent);
+  opacity: 0;
+  transform: scaleX(0);
+  will-change: transform, opacity;
+  animation: vt-line 1.25s cubic-bezier(0.16, 1, 0.3, 1) 1.9s both;
+}
+@keyframes vt-line { to { opacity: 1; transform: scaleX(1); } }
+
+.vt-tag {
+  margin-top: 1.2rem;
+  padding-left: 0.4em;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  text-align: center;
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  will-change: transform, opacity;
+  animation: vt-tag 1.1s cubic-bezier(0.16, 1, 0.3, 1) 2s both;
+}
+@keyframes vt-tag { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@media (min-width: 640px) {
+  .vt-tag { font-size: 0.75rem; }
+}
+
+/* BrandLoader (session / profile loading) - same visual language */
+.vt-loader {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  place-items: center;
+  overflow: hidden;
+  background: #04020a;
+  visibility: visible;
+}
+.vt-loader-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(110vw, 30rem);
+  height: min(110vw, 30rem);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(192, 38, 211, 0.4), rgba(34, 211, 238, 0.14) 45%, transparent 68%);
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform, opacity;
+  animation: vt-breathe 4.5s ease-in-out infinite;
+}
+@keyframes vt-breathe {
+  0%, 100% { opacity: 0.45; transform: translate3d(-50%, -50%, 0) scale(0.95); }
+  50% { opacity: 0.9; transform: translate3d(-50%, -50%, 0) scale(1.06); }
+}
+.vt-orbit-a { will-change: transform; animation: vt-spin 14s linear infinite; }
+.vt-orbit-b { will-change: transform; animation: vt-spin 9s linear infinite reverse; }
+.vt-pulse { will-change: transform, opacity; animation: vt-pulse 2.6s ease-in-out infinite; }
+@keyframes vt-pulse {
+  0%, 100% { opacity: 0.75; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+.vt-shimmer { will-change: transform; animation: vt-shimmer 1.6s ease-in-out infinite; }
+@keyframes vt-shimmer {
+  from { transform: translate3d(-120%, 0, 0); }
+  to { transform: translate3d(320%, 0, 0); }
+}
+
+/* Background blobs: promote to their own layer and use a lighter blur on phones. */
+.animate-blob { will-change: transform; }
+@media (max-width: 640px) {
+  .animate-blob { filter: blur(64px) !important; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Touch / non-PC devices: lighter animations. Everything in this block   */
+/* matches `(hover: none), (pointer: coarse)` — real PCs keep the full   */
+/* fidelity versions above, untouched.                                  */
+/* ------------------------------------------------------------------ */
+
+/* Intro: lighter on non-PC. CSS defaults were written for non-PC; PC gets
+   the full motion in the next block below. */
+html.vt-intro-on .vt-glow-c { display: none; }
+.vt-ring svg { animation-duration: calc(var(--d, 24s) * 1.35); }
+.vt-tag { letter-spacing: 0.2em; }
+@media (max-width: 640px) {
+  .vt-ring svg { animation: none; }
+}
+
+/* Only on real PCs: restore the full-fidelity intro and tagline */
+@media (hover: hover) and (pointer: fine) {
+  html.vt-intro-on .vt-glow-c { display: block; }
+  .vt-ring svg { animation-duration: var(--d, 24s); }
+  .vt-tag { letter-spacing: 0.4em; }
+}
+
+/* Touch devices: ambient/parallax & floating UI kept minimal */
+@media (hover: none), (pointer: coarse) {
+  .animate-blob { animation: none !important; filter: blur(52px) !important; }
+  .animate-floaty, .animate-floaty-slow, .animate-float-badge,
+  .animate-spin-slow { animation: none !important; }
+  .animate-ken-burns { animation: none; }
+  .reveal.is-pending { transform: translate3d(0, 18px, 0); }
+  .hero-enter { animation-duration: 0.55s; }
+  .split-text-char { animation-duration: 0.55s; }
+  .marquee-track { animation-duration: 42s; }
+}
+
+/* ========================================================================
+   Mobile/touch motion profile. Desktop/fine-pointer rules above remain intact.
+   ======================================================================== */
+.vt-mobile-only { display: none; }
+
+@keyframes vt-mobile-rise {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes vt-mobile-line-in {
+  from { opacity: 0; transform: scaleX(0); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+
+@media (max-width: 640px), (hover: none), (pointer: coarse) {
+  /* Separate entry scene: no giant blurred surfaces, rotating SVGs or
+     per-letter animations. Only a few transform/opacity transitions. */
+  html.vt-intro-on .vt-intro {
+    background:
+      radial-gradient(ellipse 65% 48% at 50% 46%, rgba(91, 33, 151, 0.24), transparent 100%),
+      #04020a;
+    animation: vt-out 0.55s ease-out 1.55s both;
+  }
+  html.vt-intro-on body { animation: vt-body 0.01s linear 1.5s forwards; }
+  .vt-intro::after { display: none; }
+  .vt-intro .vt-desktop-only { display: none !important; }
+  .vt-mobile-only {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    max-width: 100%;
+    padding: 1rem;
+  }
+  .vt-mobile-mark {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-bottom: 1.15rem;
+    border: 1px solid rgba(240, 171, 252, 0.36);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(34, 211, 238, 0.14));
+    color: #f5d0fe;
+    font: 800 1.6rem var(--font-display);
+    opacity: 0;
+    animation: vt-mobile-rise 0.42s ease-out 0.12s both;
+  }
+  .vt-mobile-word {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 10vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-align: center;
+    opacity: 0;
+    animation: vt-mobile-rise 0.52s ease-out 0.38s both;
+  }
+  .vt-mobile-line {
+    width: min(13rem, 65vw);
+    height: 1px;
+    margin-top: 1.15rem;
+    background: linear-gradient(90deg, transparent, #d946ef, #22d3ee, transparent);
+    transform-origin: center;
+    opacity: 0;
+    animation: vt-mobile-line-in 0.52s ease-out 0.72s both;
+  }
+  .vt-mobile-tag {
+    margin-top: 1rem;
+    color: #a1a1aa;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-align: center;
+    opacity: 0;
+    animation: vt-mobile-rise 0.48s ease-out 0.92s both;
+  }
+
+  /* The profile loader is shorter, static except its small indicator. */
+  .vt-loader-glow { animation: none !important; opacity: 0.35; }
+  .vt-orbit-a, .vt-orbit-b { animation: none !important; }
+  .vt-pulse { animation: none !important; opacity: 1; }
+  .vt-shimmer { animation-duration: 2.5s; }
+
+  /* Heavy layered effects are painted once or omitted on touch devices. */
+  .animate-blob, .vt-mobile-heavy { display: none !important; }
+  .noise::after { display: none; }
+  .glass { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .text-gradient { animation: none; background-position: 50% 50%; }
+  .animated-border::before { animation: none !important; }
+  .marquee-track { animation: none !important; }
+  .hero-enter { animation-duration: 0.4s; }
+  .hero-fade { animation-duration: 0.45s; }
+  .split-text-char { animation: none !important; opacity: 1; transform: none; }
+  .vt-modal-overlay, .vt-modal-backdrop {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .card-3d { will-change: auto; }
+}
+
+/* Mobile details and creator sheets: keep every edge inside the viewport.
+   The filter bar scrolls sideways by itself; the page never grows wider. */
+@media (max-width: 639px) {
+  .vt-hub, .vt-hub > * { min-width: 0; max-width: 100%; }
+  .vt-hub :is(h2, h3, h4, p) { overflow-wrap: anywhere; }
+  .vt-filter-strip {
+    display: flex;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.25rem;
+  }
+  .vt-filter-strip::-webkit-scrollbar { display: none; }
+  .vt-filter-strip > button { flex: 0 0 auto; white-space: nowrap; }
+  .vt-modal-overlay {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    overflow: hidden;
+  }
+  .vt-modal-sheet {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100vh;
+    max-height: 100dvh;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+  .vt-modal-sheet h2, .vt-modal-sheet h3, .vt-modal-sheet p,
+  .vt-modal-sheet span, .vt-modal-sheet button {
+    overflow-wrap: anywhere;
+  }
+  .vt-modal-sheet :is(input, textarea, select) {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .vt-mobile-macros { min-width: 0; width: 100%; }
+  .vt-mobile-macros > div { min-width: 0; }
+}
